@@ -19,8 +19,8 @@ export default function AboutPage() {
         eyebrow="Meet the two of us"
         title={
           <>
-            The people who clean it
-            <br /> are the people who own it.
+            You get the owners.
+            <br /> Every time.
           </>
         }
         crumbs={[
@@ -91,17 +91,17 @@ export default function AboutPage() {
                 <div className="relative overflow-hidden rounded-[26px] shadow-[0_28px_60px_-30px_rgba(21,24,28,0.4)]">
                   <div className="relative aspect-[4/3]">
                     <Image
-                      src="/img/real-bedroom.jpg"
-                      alt="A bedroom after cleaning, with fresh vacuum lines across the carpet"
+                      src="/img/bathroom.jpg"
+                      alt="A bright, spotless bathroom with a clean tub and vanity"
                       fill
                       sizes="(max-width:1023px) 100vw, 44vw"
                       className="object-cover"
                     />
                   </div>
                   <p className="bg-white px-5 py-4 text-[13px] leading-relaxed text-slate">
-                    One of ours. The vacuum lines are the part we care about —
-                    it means the whole floor got covered, not just the parts you
-                    can see from the door.
+                    The bathroom is where you find out whether a cleaner is any
+                    good. It&rsquo;s the room we spend the longest on, and the
+                    first one we&rsquo;d want you to check.
                   </p>
                 </div>
 

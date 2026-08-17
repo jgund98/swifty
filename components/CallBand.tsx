@@ -25,7 +25,9 @@ export default function CallBand({
       />
 
       <div className="relative mx-auto max-w-[1240px] px-4 sm:px-6">
-        <div className="max-w-[34ch]">
+        {/* px, not ch — `ch` here resolves against the wrapper's 16px font,
+            which squeezed a 48px heading into ~270px and orphaned a word. */}
+        <div className="max-w-[560px]">
           <p className="eyebrow text-leaf-light">{site.hours}</p>
           <h2 className="mt-3 font-display text-[clamp(1.9rem,5vw,3rem)] font-extrabold leading-[1.04] tracking-[-0.035em] text-white">
             {heading}

@@ -20,7 +20,7 @@ export default function ServicesPage() {
         title={
           <>
             Six things they do,
-            <br /> and one way they do them.
+            <br /> one way they do them.
           </>
         }
         intro="Every one of these can be booked on its own or bundled into a regular visit. Nothing here is a package — you pick, and Ashley prices what you picked."
@@ -37,9 +37,9 @@ export default function ServicesPage() {
               <Item key={s.slug} className="h-full">
                 <Link
                   href={`/services/${s.slug}`}
-                  className="card group flex h-full flex-col overflow-hidden sm:flex-row"
+                  className="card group flex h-full flex-col overflow-hidden lg:flex-row"
                 >
-                  <div className="relative aspect-[16/10] w-full shrink-0 overflow-hidden sm:aspect-auto sm:w-[40%]">
+                  <div className="relative aspect-[16/10] w-full shrink-0 overflow-hidden lg:aspect-auto lg:w-[38%]">
                     <Image
                       src={s.image}
                       alt={s.imageAlt}

@@ -89,7 +89,7 @@ export default function Hero() {
             initial="hidden"
             animate="show"
             variants={rise}
-            className="mt-4 font-display text-[clamp(2.4rem,7.4vw,4.4rem)] font-extrabold leading-[1.02] tracking-[-0.035em]"
+            className="mt-4 font-display text-[clamp(2.3rem,5.2vw,4.2rem)] font-extrabold leading-[1.02] tracking-[-0.035em]"
           >
             Come home to a
             <br className="hidden sm:block" />{" "}

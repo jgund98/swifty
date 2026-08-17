@@ -13,32 +13,15 @@ export default function Promises() {
       <div className="mx-auto max-w-[1240px] px-4 sm:px-6">
         <div className="grid gap-12 lg:grid-cols-[0.9fr_1.1fr] lg:items-center lg:gap-16">
           <Reveal>
-            <div className="relative">
-              <div className="relative aspect-[4/5] overflow-hidden rounded-[26px] shadow-[0_28px_60px_-30px_rgba(21,24,28,0.4)] sm:aspect-[5/4] lg:aspect-[4/5]">
-                <Image
-                  src="/img/detail-spray.jpg"
-                  alt="A green spray bottle on a clean white surface"
-                  fill
-                  sizes="(max-width:1023px) 100vw, 40vw"
-                  className="object-cover"
-                />
-              </div>
-              <div className="absolute -bottom-6 -right-3 w-[44%] overflow-hidden rounded-2xl border-[6px] border-white shadow-[0_24px_48px_-20px_rgba(21,24,28,0.4)] sm:-right-6 sm:w-[38%]">
-                <div className="relative aspect-square">
-                  <Image
-                    src="/img/real-bedroom.jpg"
-                    alt="A bedroom Ashley cleaned, with fresh vacuum lines across the carpet"
-                    fill
-                    sizes="240px"
-                    className="object-cover"
-                  />
-                </div>
-              </div>
+            <div className="relative aspect-[4/5] overflow-hidden rounded-[26px] shadow-[0_28px_60px_-30px_rgba(21,24,28,0.4)] sm:aspect-[5/4] lg:aspect-[4/5]">
+              <Image
+                src="/img/promise-light.jpg"
+                alt="Morning sunlight falling across a clean, tidy corner of a home"
+                fill
+                sizes="(max-width:1023px) 100vw, 40vw"
+                className="object-cover"
+              />
             </div>
-            <p className="mt-9 max-w-[62%] text-[12.5px] leading-relaxed text-slate/70">
-              Right: one of {site.ownerFirst}&rsquo;s own jobs. Look at the
-              carpet.
-            </p>
           </Reveal>
 
           <div>

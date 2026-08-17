@@ -118,7 +118,11 @@ export default function BuildYourClean() {
           </p>
         </div>
 
-        <div className="mt-10 grid gap-5 lg:grid-cols-[1.35fr_0.65fr] lg:items-start">
+        {/* items-stretch, not items-start: the two cards match height so the
+            section carries equal weight instead of leaving a hole on the
+            right. The summary scrolls inside a fixed frame, so the panel
+            never grows or jumps no matter how much is ticked. */}
+        <div className="mt-10 grid gap-5 lg:grid-cols-[1.18fr_0.82fr] lg:items-stretch">
           {/* ── the picker ───────────────────────────────── */}
           <div className="card p-6 sm:p-8">
             <Group label="How big is the place?">
@@ -164,7 +168,7 @@ export default function BuildYourClean() {
           </div>
 
           {/* ── the running estimate ─────────────────────── */}
-          <div className="card overflow-hidden lg:sticky lg:top-28">
+          <div className="card flex flex-col overflow-hidden">
             <div className="bg-ink px-6 py-5">
               <p className="eyebrow text-white/50">Your visit</p>
               <div className="mt-2 flex items-end gap-2">
@@ -202,32 +206,37 @@ export default function BuildYourClean() {
               </div>
             </div>
 
-            <div className="px-6 py-5">
+            <div className="flex flex-1 flex-col px-6 py-5">
               <p className="eyebrow text-slate/50">
                 {picked} {picked === 1 ? "item" : "items"} on the list
               </p>
-              {summary.length === 0 ? (
-                <p className="mt-3 text-[14.5px] italic text-slate/70">
-                  Nothing picked yet — tick a few things on the left.
-                </p>
-              ) : (
-                <ul className="mt-3 grid gap-1.5">
-                  {summary.map((s) => (
-                    <motion.li
-                      key={s}
-                      initial={{ opacity: 0, x: -6 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ duration: 0.22 }}
-                      className="flex items-start gap-2 text-[14.5px] leading-snug text-ink"
-                    >
-                      <Tick />
-                      {s}
-                    </motion.li>
-                  ))}
-                </ul>
-              )}
 
-              <div className="mt-6 grid gap-2.5">
+              {/* Fixed frame that scrolls — every extra tick lands inside it
+                  rather than stretching the card. */}
+              <div className="no-scrollbar mt-3 min-h-[132px] flex-1 overflow-y-auto lg:max-h-[280px]">
+                {summary.length === 0 ? (
+                  <p className="text-[14.5px] italic text-slate/70">
+                    Nothing picked yet — tick a few things on the left.
+                  </p>
+                ) : (
+                  <ul className="grid gap-1.5 pr-1">
+                    {summary.map((s) => (
+                      <motion.li
+                        key={s}
+                        initial={{ opacity: 0, x: -6 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ duration: 0.22 }}
+                        className="flex items-start gap-2 text-[14.5px] leading-snug text-ink"
+                      >
+                        <Tick />
+                        {s}
+                      </motion.li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+
+              <div className="mt-5 grid shrink-0 gap-2.5 border-t border-mist-2 pt-5">
                 <Link
                   href={`/contact?${query}`}
                   className="btn btn-leaf w-full text-[15.5px]"
