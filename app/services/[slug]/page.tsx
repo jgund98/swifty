@@ -218,7 +218,7 @@ export default async function ServicePage({
             >
               {site.phone}
             </a>
-            .
+            {"."}
           </p>
         </div>
       </section>

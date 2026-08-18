@@ -4,10 +4,16 @@
  * The territory, drawn from real coordinates. Middleburg is the hub; every
  * town sits at its true latitude and longitude relative to it, so the shape
  * you see is the shape of the drive.
+ *
+ * One observer, not thirty. Every dot and label used to carry its own
+ * `whileInView`, which broke on phones: the map is wider than the screen and
+ * scrolls sideways, so most elements were never intersecting the viewport
+ * and stayed at opacity 0. Now a single observer watches the section and the
+ * children animate off that boolean.
  */
 
 import { useEffect, useRef } from "react";
-import { motion } from "framer-motion";
+import { motion, useInView } from "framer-motion";
 import { site } from "@/lib/site";
 import { PhoneIcon } from "./Header";
 
@@ -27,19 +33,19 @@ const TOWNS: Town[] = [
   { name: "Perryville", lat: 37.654, lng: -84.955, side: "left" },
   { name: "Science Hill", lat: 37.181, lng: -84.633, side: "right" },
   { name: "Eubank", lat: 37.283, lng: -84.652, side: "right" },
-  { name: "Nancy", lat: 37.055, lng: -84.780, side: "left" },
+  { name: "Nancy", lat: 37.055, lng: -84.78, side: "left" },
   { name: "Russell Springs", lat: 37.055, lng: -85.088, side: "left" },
   { name: "Columbia", lat: 37.103, lng: -85.306, side: "left" },
   { name: "Campbellsville", lat: 37.343, lng: -85.341, side: "left" },
   { name: "Bradfordsville", lat: 37.494, lng: -85.146, side: "left" },
   { name: "Dunnville", lat: 37.211, lng: -84.936, side: "left" },
   { name: "Yosemite", lat: 37.335, lng: -84.797, side: "right" },
-  { name: "Waynesburg", lat: 37.352, lng: -84.660, side: "right" },
+  { name: "Waynesburg", lat: 37.352, lng: -84.66, side: "right" },
 ];
 
 const W = 840;
 const H = 520;
-const PAD_X = 110;
+const PAD_X = 112;
 const PAD_Y = 56;
 const LNG = [-85.42, -84.44];
 const LAT = [36.99, 37.73];
@@ -54,12 +60,24 @@ export default function ServiceArea({ compact = false }: { compact?: boolean }) 
   const hx = px(hub.lng);
   const hy = py(hub.lat);
   const scroller = useRef<HTMLDivElement>(null);
+  const mapRef = useRef<HTMLDivElement>(null);
+  const inView = useInView(mapRef, { once: true, margin: "-40px 0px" });
 
   useEffect(() => {
     const el = scroller.current;
     if (!el) return;
-    const extra = el.scrollWidth - el.clientWidth;
-    if (extra > 0) el.scrollLeft = extra / 2;
+    const centre = () => {
+      const extra = el.scrollWidth - el.clientWidth;
+      if (extra > 0) el.scrollLeft = extra / 2;
+    };
+    centre();
+    // fonts landing changes label widths, which changes scrollWidth
+    const t = setTimeout(centre, 400);
+    window.addEventListener("resize", centre);
+    return () => {
+      clearTimeout(t);
+      window.removeEventListener("resize", centre);
+    };
   }, []);
 
   return (
@@ -94,130 +112,129 @@ export default function ServiceArea({ compact = false }: { compact?: boolean }) 
             )}
           </div>
 
-          {/* Plotted from real coordinates, so it can't just shrink — below sm
-              it keeps a legible width and swipes sideways instead. */}
-          <div
-            ref={scroller}
-            className="no-scrollbar relative -mx-4 overflow-x-auto px-4 sm:mx-0 sm:overflow-visible sm:px-0"
-          >
-            <div className="min-w-[600px] sm:min-w-0">
-              <svg
-                viewBox={`0 0 ${W} ${H}`}
-                className="w-full"
-                role="img"
-                aria-label={`Towns served: ${TOWNS.map((t) => t.name).join(", ")}`}
-              >
-                <defs>
-                  <radialGradient id="ss-hub">
-                    <stop offset="0%" stopColor="#7CC242" stopOpacity="0.28" />
-                    <stop offset="100%" stopColor="#7CC242" stopOpacity="0" />
-                  </radialGradient>
-                  <linearGradient id="ss-spoke" x1="0" y1="0" x2="1" y2="1">
-                    <stop offset="0%" stopColor="#7CC242" stopOpacity="0.5" />
-                    <stop offset="100%" stopColor="#2AABE2" stopOpacity="0.12" />
-                  </linearGradient>
-                </defs>
+          <div ref={mapRef}>
+            {/* Plotted from real coordinates, so it can't just shrink — below sm
+                it keeps a legible width and swipes sideways instead. */}
+            <div
+              ref={scroller}
+              className="no-scrollbar relative -mx-4 overflow-x-auto px-4 sm:mx-0 sm:overflow-visible sm:px-0"
+            >
+              <div className="min-w-[560px] sm:min-w-0">
+                <svg
+                  viewBox={`0 0 ${W} ${H}`}
+                  className="w-full"
+                  role="img"
+                  aria-label={`Towns served: ${TOWNS.map((t) => t.name).join(", ")}`}
+                >
+                  <defs>
+                    <radialGradient id="ss-hub">
+                      <stop offset="0%" stopColor="#7CC242" stopOpacity="0.28" />
+                      <stop offset="100%" stopColor="#7CC242" stopOpacity="0" />
+                    </radialGradient>
+                    <linearGradient id="ss-spoke" x1="0" y1="0" x2="1" y2="1">
+                      <stop offset="0%" stopColor="#7CC242" stopOpacity="0.5" />
+                      <stop offset="100%" stopColor="#2AABE2" stopOpacity="0.12" />
+                    </linearGradient>
+                  </defs>
 
-                {[110, 190, 262].map((r, i) => (
-                  <motion.circle
-                    key={r}
-                    cx={hx}
-                    cy={hy}
-                    r={r}
-                    fill="none"
-                    stroke="rgba(42,171,226,0.22)"
-                    strokeWidth="1"
-                    strokeDasharray="3 7"
-                    initial={{ opacity: 0, scale: 0.86 }}
-                    whileInView={{ opacity: 1, scale: 1 }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 0.8, delay: i * 0.12 }}
-                    style={{ transformOrigin: `${hx}px ${hy}px` }}
-                  />
-                ))}
+                  {[110, 190, 262].map((r, i) => (
+                    <motion.circle
+                      key={r}
+                      cx={hx}
+                      cy={hy}
+                      r={r}
+                      fill="none"
+                      stroke="rgba(42,171,226,0.22)"
+                      strokeWidth="1"
+                      strokeDasharray="3 7"
+                      initial={{ opacity: 0, scale: 0.86 }}
+                      animate={inView ? { opacity: 1, scale: 1 } : undefined}
+                      transition={{ duration: 0.8, delay: i * 0.12 }}
+                      style={{ transformOrigin: `${hx}px ${hy}px` }}
+                    />
+                  ))}
 
-                <circle cx={hx} cy={hy} r="160" fill="url(#ss-hub)" />
+                  <circle cx={hx} cy={hy} r="160" fill="url(#ss-hub)" />
 
-                {TOWNS.slice(1).map((t, i) => (
-                  <motion.line
-                    key={t.name}
-                    x1={hx}
-                    y1={hy}
-                    x2={px(t.lng)}
-                    y2={py(t.lat)}
-                    stroke="url(#ss-spoke)"
-                    strokeWidth="1"
-                    initial={{ pathLength: 0, opacity: 0 }}
-                    whileInView={{ pathLength: 1, opacity: 1 }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 0.65, delay: 0.15 + i * 0.03 }}
-                  />
-                ))}
-
-                {TOWNS.map((t, i) => {
-                  const x = px(t.lng);
-                  const y = py(t.lat);
-                  const isHub = i === 0;
-                  const anchor = t.side === "left" ? "end" : "start";
-                  const dx = t.side === "left" ? -11 : 11;
-                  return (
-                    <motion.g
+                  {TOWNS.slice(1).map((t, i) => (
+                    <motion.line
                       key={t.name}
-                      initial={{ opacity: 0 }}
-                      whileInView={{ opacity: 1 }}
-                      viewport={{ once: true }}
-                      transition={{ duration: 0.4, delay: 0.3 + i * 0.03 }}
-                    >
-                      {isHub && (
+                      x1={hx}
+                      y1={hy}
+                      x2={px(t.lng)}
+                      y2={py(t.lat)}
+                      stroke="url(#ss-spoke)"
+                      strokeWidth="1"
+                      initial={{ pathLength: 0, opacity: 0 }}
+                      animate={inView ? { pathLength: 1, opacity: 1 } : undefined}
+                      transition={{ duration: 0.65, delay: 0.15 + i * 0.03 }}
+                    />
+                  ))}
+
+                  {TOWNS.map((t, i) => {
+                    const x = px(t.lng);
+                    const y = py(t.lat);
+                    const isHub = i === 0;
+                    const anchor = t.side === "left" ? "end" : "start";
+                    const dx = t.side === "left" ? -11 : 11;
+                    return (
+                      <motion.g
+                        key={t.name}
+                        initial={{ opacity: 0 }}
+                        animate={inView ? { opacity: 1 } : undefined}
+                        transition={{ duration: 0.4, delay: 0.3 + i * 0.03 }}
+                      >
+                        {isHub && (
+                          <circle
+                            cx={x}
+                            cy={y}
+                            r="13"
+                            fill="none"
+                            stroke="#5FA32C"
+                            strokeWidth="1.5"
+                            opacity="0.55"
+                          />
+                        )}
                         <circle
                           cx={x}
                           cy={y}
-                          r="13"
-                          fill="none"
-                          stroke="#5FA32C"
-                          strokeWidth="1.5"
-                          opacity="0.55"
+                          r={isHub ? 6.5 : t.core ? 5 : 3.2}
+                          fill={isHub ? "#5FA32C" : t.core ? "#2AABE2" : "#9AA6B2"}
                         />
-                      )}
-                      <circle
-                        cx={x}
-                        cy={y}
-                        r={isHub ? 6.5 : t.core ? 5 : 3.2}
-                        fill={isHub ? "#5FA32C" : t.core ? "#2AABE2" : "#9AA6B2"}
-                      />
-                      <text
-                        x={x + dx}
-                        y={y + 4.5}
-                        textAnchor={anchor}
-                        className={
-                          isHub
-                            ? "fill-[#3E7A18] font-display text-[17px] font-extrabold"
-                            : t.core
-                              ? "fill-[#15181C] font-display text-[14px] font-bold"
-                              : "fill-[#7B8794] font-display text-[12px] font-semibold"
-                        }
-                      >
-                        {t.name}
-                      </text>
-                    </motion.g>
-                  );
-                })}
+                        <text
+                          x={x + dx}
+                          y={y + 4.5}
+                          textAnchor={anchor}
+                          className={
+                            isHub
+                              ? "fill-[#3E7A18] font-display text-[17px] font-extrabold"
+                              : t.core
+                                ? "fill-[#15181C] font-display text-[14px] font-bold"
+                                : "fill-[#7B8794] font-display text-[12px] font-semibold"
+                          }
+                        >
+                          {t.name}
+                        </text>
+                      </motion.g>
+                    );
+                  })}
 
-                <text
-                  x={hx}
-                  y={hy - 22}
-                  textAnchor="middle"
-                  className="fill-[#5FA32C] font-display text-[10px] font-bold tracking-[0.22em]"
-                >
-                  HOME BASE
-                </text>
-              </svg>
+                  <text
+                    x={hx}
+                    y={hy - 22}
+                    textAnchor="middle"
+                    className="fill-[#5FA32C] font-display text-[10px] font-bold tracking-[0.22em]"
+                  >
+                    HOME BASE
+                  </text>
+                </svg>
+              </div>
             </div>
+            <p className="mt-2 text-center font-display text-[11px] font-bold uppercase tracking-[0.2em] text-slate/40 sm:hidden">
+              Swipe the map →
+            </p>
           </div>
         </div>
-        <p className="mt-2 text-center font-display text-[11px] font-bold uppercase tracking-[0.2em] text-slate/40 sm:hidden">
-          Swipe the map →
-        </p>
       </div>
     </section>
   );

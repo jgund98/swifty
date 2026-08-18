@@ -145,7 +145,7 @@ export default function QuoteForm({ prefill }: { prefill?: Partial<Data> }) {
   }
 
   return (
-    <form onSubmit={submit} className="card mx-auto max-w-[720px] overflow-hidden">
+    <form onSubmit={submit} className="card mx-auto flex w-full max-w-[720px] flex-col overflow-hidden">
       <div className="relative h-[5px] w-full bg-mist-2">
         <motion.div
           className="absolute inset-y-0 left-0"
@@ -155,7 +155,7 @@ export default function QuoteForm({ prefill }: { prefill?: Partial<Data> }) {
         />
       </div>
 
-      <div className="p-6 sm:p-8">
+      <div className="flex flex-1 flex-col p-6 sm:p-8">
         <p className="eyebrow text-leaf-deep">
           Step {step + 1} of 3
           <span className="pl-3 text-slate/50">

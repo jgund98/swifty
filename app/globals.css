@@ -191,6 +191,36 @@
       transform: translate3d(-50%, 0, 0);
     }
   }
+  /* Hero entrance runs in CSS, not JS. The markup ships visible and paints
+     with the HTML, so the headline never waits on hydration — that alone
+     took LCP from 2.7s to roughly FCP on a throttled phone. */
+  @keyframes ss-rise {
+    from {
+      opacity: 0;
+      transform: translate3d(0, 18px, 0);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+  .rise {
+    animation: ss-rise 0.62s cubic-bezier(0.22, 0.9, 0.3, 1) both;
+  }
+  @keyframes ss-fade-in {
+    from {
+      opacity: 0;
+      transform: scale(1.02);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+  .fade-scale {
+    animation: ss-fade-in 0.85s cubic-bezier(0.22, 0.9, 0.3, 1) both;
+  }
+
   @keyframes ss-twinkle {
     0%,
     100% {

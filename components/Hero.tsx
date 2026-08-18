@@ -1,22 +1,17 @@
-"use client";
-
 import Image from "next/image";
 import Link from "next/link";
-import { motion } from "framer-motion";
 import { site, coreCities, allCities } from "@/lib/site";
 import { PhoneIcon } from "./Header";
 import SwiftyLogo from "./Logo";
 
-const EASE = [0.22, 0.9, 0.3, 1] as const;
-
-const rise = {
-  hidden: { opacity: 0, y: 20 },
-  show: (i: number) => ({
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.55, delay: i * 0.06, ease: EASE },
-  }),
-};
+/*
+ * Deliberately a server component with a CSS-only entrance.
+ *
+ * This used to animate in with framer-motion, which meant the headline sat
+ * at opacity 0 until React hydrated — LCP 2.7s on a throttled phone against
+ * an FCP of 1.4s. The markup now ships visible and the entrance runs in CSS,
+ * so the fold paints with the HTML and needs no JS at all.
+ */
 
 /** Four-point sparkles — the brand motif, drifting over the photo. */
 function Sparkle({
@@ -68,13 +63,7 @@ export default function Hero() {
       >
         {/* ── headline ─────────────────────────────────────── */}
         <div className="[grid-area:head] lg:self-end">
-          <motion.div
-            custom={0}
-            initial="hidden"
-            animate="show"
-            variants={rise}
-            className="inline-flex items-center gap-2 rounded-full bg-leaf-wash px-3.5 py-1.5"
-          >
+          <div className="rise inline-flex items-center gap-2 rounded-full bg-leaf-wash px-3.5 py-1.5">
             <span className="relative flex h-2 w-2">
               <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-leaf opacity-70" />
               <span className="relative inline-flex h-2 w-2 rounded-full bg-leaf" />
@@ -82,14 +71,11 @@ export default function Hero() {
             <span className="eyebrow text-leaf-deep">
               Licensed · Insured · Smoke-free
             </span>
-          </motion.div>
+          </div>
 
-          <motion.h1
-            custom={1}
-            initial="hidden"
-            animate="show"
-            variants={rise}
-            className="mt-4 font-display text-[clamp(2.3rem,5.2vw,4.2rem)] font-extrabold leading-[1.02] tracking-[-0.035em]"
+          <h1
+            className="rise mt-4 font-display text-[clamp(2.3rem,5.2vw,4.2rem)] font-extrabold leading-[1.02] tracking-[-0.035em]"
+            style={{ animationDelay: "60ms" }}
           >
             Come home to a
             <br className="hidden sm:block" />{" "}
@@ -103,16 +89,11 @@ export default function Hero() {
                 }}
               />
             </span>
-          </motion.h1>
+          </h1>
         </div>
 
         {/* ── media ────────────────────────────────────────── */}
-        <motion.div
-          initial={{ opacity: 0, scale: 1.02 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.85, ease: EASE }}
-          className="relative [grid-area:media]"
-        >
+        <div className="fade-scale relative [grid-area:media]">
           <div className="relative aspect-[4/3] overflow-hidden rounded-[26px] shadow-[0_30px_70px_-32px_rgba(21,24,28,0.42)] sm:aspect-[16/11] lg:aspect-[5/4]">
             <Image
               src="/img/hero-bright.jpg"
@@ -139,28 +120,22 @@ export default function Hero() {
               </p>
             </div>
           </div>
-        </motion.div>
+        </div>
 
         {/* ── copy + CTAs ──────────────────────────────────── */}
         <div className="mt-4 [grid-area:copy] lg:mt-0 lg:self-start">
-          <motion.p
-            custom={2}
-            initial="hidden"
-            animate="show"
-            variants={rise}
-            className="max-w-[40ch] text-[17px] leading-relaxed text-slate sm:text-[18.5px]"
+          <p
+            className="rise max-w-[40ch] text-[17px] leading-relaxed text-slate sm:text-[18.5px]"
+            style={{ animationDelay: "120ms" }}
           >
             {site.owner} and {site.partner} clean houses and businesses across{" "}
             {site.areaLabel}. Two people, every visit, who learn your home once
             and keep it that way.
-          </motion.p>
+          </p>
 
-          <motion.div
-            custom={3}
-            initial="hidden"
-            animate="show"
-            variants={rise}
-            className="mt-7 flex flex-col gap-3 sm:flex-row sm:flex-wrap"
+          <div
+            className="rise mt-7 flex flex-col gap-3 sm:flex-row sm:flex-wrap"
+            style={{ animationDelay: "180ms" }}
           >
             <Link href="/#build" className="btn btn-leaf w-full text-[16px] sm:w-auto">
               Build my clean
@@ -173,18 +148,15 @@ export default function Hero() {
               <PhoneIcon className="h-[17px] w-[17px]" />
               {site.phone}
             </a>
-          </motion.div>
+          </div>
 
-          <motion.p
-            custom={4}
-            initial="hidden"
-            animate="show"
-            variants={rise}
-            className="mt-6 text-[14.5px] leading-relaxed text-slate/90"
+          <p
+            className="rise mt-6 text-[14.5px] leading-relaxed text-slate/90"
+            style={{ animationDelay: "240ms" }}
           >
             No contracts, no packages you didn&rsquo;t ask for. Tell them what
             matters and they price that.
-          </motion.p>
+          </p>
         </div>
       </div>
 

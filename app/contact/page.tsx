@@ -17,7 +17,7 @@ export default function ContactPage() {
       <PageHead
         eyebrow="Build your clean"
         title={<>Tell {site.ownerFirst} what needs doing.</>}
-        intro="Three quick questions. She answers herself — no call centre, no automated quote, no salesperson."
+        intro="Three quick questions, then Ashley answers you herself. No call centre and no automated quote."
         crumbs={[
           { href: "/", label: "Home" },
           { href: "/contact", label: "Get a Quote" },
@@ -26,14 +26,14 @@ export default function ContactPage() {
 
       <section className="bg-white pb-16 sm:pb-20">
         <div className="mx-auto max-w-[1240px] px-4 sm:px-6">
-          <div className="grid gap-10 lg:grid-cols-[1fr_340px] lg:items-start lg:gap-12">
+          <div className="grid gap-10 lg:grid-cols-[1fr_330px] lg:items-stretch lg:gap-12">
             <Suspense
-              fallback={<div className="card h-[520px] w-full bg-mist" />}
+              fallback={<div className="card h-[560px] w-full bg-mist" />}
             >
               <ContactClient />
             </Suspense>
 
-            <aside className="space-y-4 lg:sticky lg:top-28">
+            <aside className="flex flex-col gap-4">
               <div className="card p-6">
                 <p className="eyebrow text-leaf-deep">Faster than a form</p>
                 <p className="mt-3 font-display text-[25px] font-extrabold leading-tight">

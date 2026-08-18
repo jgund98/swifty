@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Hero from "@/components/Hero";
 import BuildYourClean from "@/components/BuildYourClean";
+import MirrorTest from "@/components/MirrorTest";
 import Promises from "@/components/Promises";
 import ServicesGrid from "@/components/ServicesGrid";
 import ServiceArea from "@/components/ServiceArea";
@@ -18,6 +19,7 @@ export default function Home() {
     <>
       <Hero />
       <BuildYourClean />
+      <MirrorTest />
       <Promises />
       <ServicesGrid intro="Six things they do. Mix and match them — nobody here is going to sell you a package you didn't ask for." />
       <ServiceArea />
